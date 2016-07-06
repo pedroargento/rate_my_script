@@ -32,7 +32,7 @@ class theForm(Form):
 @app.route('/',methods=['GET', 'POST'])
 def model():
 	form = theForm(csrf_enabled=False)
-	if form.validate_on_submit():
+	if form.validate_on_submit(): # activates this if when i hit submit!
 		#Retrieve values from form
 		session['sepal_length'] = form.sepal_length.data
 		session['sepal_width'] = form.sepal_width.data
@@ -43,14 +43,20 @@ def model():
 		flower_instance = [(session['sepal_length']), (session['sepal_width']), (session['petal_length']), (session['petal_width'])]
 		#Fit model with n_neigh neighbors
 
-		if session['n_neighb'] == 0:
+		if session['n_neighb'] == 0: #chose the first drop down, using the already pickled model
 			with open('knn.pickle', 'rb') as handle:
 				knn = pickle.load(handle)
-		else:
-			knn = KNeighborsClassifier(n_neighbors=session['n_neighb'])
+		else: #chose one of the numbered dropdown, will retrain the model and use it
+			
+
+			knn = KNeighborsClassifier(n_neighbors=session['n_neighb']) # train the model
 			knn.fit(features, target)
+
+			# now open it
 			with open('knn.pickle', 'wb') as handle:
 				pickle.dump(knn, handle)
+
+
 		#Return only the Predicted iris species
 		session['prediction'] = target_names[knn.predict(flower_instance)][0].capitalize()
 		#Implement Post/Redirect/Get Pattern
@@ -61,9 +67,6 @@ def model():
 							sepal_length=session.get('sepal_length'),sepal_width=session.get('sepal_width'),
 							petal_length=session.get('petal_length'),petal_width=session.get('petal_width'))
 
-@app.route('/hello/<name>')
-def hello(name):
-	return render_template('name.html',name=name)
 
 #Handle Bad Requests
 @app.errorhandler(404)
