@@ -5,7 +5,7 @@
 	<div class="content">
 		<h1>
 			{% if prediction %}
-			Using {{ n_neighb }} Neighbors, a flower with:<br><br>
+			Using {{ params }}, a flower with:<br><br>
 			Sepal Length: {{ sepal_length }}<br>
 			Sepal Width: {{ sepal_width }}<br>
 			Petal Length: {{ petal_length }}<br>
@@ -21,8 +21,7 @@
 	{% block page_content %}
 	<div class="content">
 		<form method="POST">
-			{{ form.n_neighb.label }} {{ form.n_neighb() }}
-			<br>
+
 			{{ form.sepal_length.label }} {{ form.sepal_length() }}
 			<br>
 			{{ form.sepal_width.label }} {{ form.sepal_width() }}
