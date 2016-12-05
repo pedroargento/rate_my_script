@@ -1,58 +1,51 @@
 from flask import Flask, render_template, session, redirect, url_for
-from flask_bootstrap import Bootstrap
 from flask.ext.wtf import Form
 from wtforms import IntegerField, StringField, SubmitField, SelectField, DecimalField
 from wtforms.validators import Required
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.datasets import load_iris
-import simplejson
-import sys
-import logging
 import pickle
-
-# Load Iris Data
-iris_data = load_iris()
-features = iris_data.data
-feature_names = iris_data.feature_names
-target = iris_data.target
-target_names = iris_data.target_names
+from sklearn import datasets
 
 # Initialize Flask App
 app = Flask(__name__)
 
 
+print "loading my model"
+with open('model.pkl', 'rb') as handle:
+    machine_learning_model = pickle.load(handle)
+print "model loaded"
+
+
 # Initialize Form Class
 class theForm(Form):
-    sepal_length = DecimalField('Sepal Length (cm):', places=2, validators=[Required()])
-    sepal_width = DecimalField('Sepal Width (cm):', places=2, validators=[Required()])
-    petal_length = DecimalField('Petal Length (cm):', places=2, validators=[Required()])
-    petal_width = DecimalField('Petal Width (cm):', places=2, validators=[Required()])
+    param1 = DecimalField(label='Sepal Length (cm):', places=2, validators=[Required()])
+    param2 = DecimalField(label='Sepal Width (cm):', places=2, validators=[Required()])
+    param3 = DecimalField(label='Petal Length (cm):', places=2, validators=[Required()])
+    param4 = DecimalField(label='Petal Width (cm):', places=2, validators=[Required()])
     submit = SubmitField('Submit')
 
 
 @app.route('/', methods=['GET', 'POST'])
-def model():
+def home():
+    print session
     form = theForm(csrf_enabled=False)
     if form.validate_on_submit():  # activates this if when i hit submit!
         # Retrieve values from form
-        session['sepal_length'] = form.sepal_length.data
-        session['sepal_width'] = form.sepal_width.data
-        session['petal_length'] = form.petal_length.data
-        session['petal_width'] = form.petal_width.data
+        session['sepal_length'] = form.param1.data
+        session['sepal_width'] = form.param2.data
+        session['petal_length'] = form.param3.data
+        session['petal_width'] = form.param4.data
         # Create array from values
         flower_instance = [(session['sepal_length']), (session['sepal_width']), (session['petal_length']),
                            (session['petal_width'])]
-        # Fit model with n_neigh neighbors
 
-        with open('knn.pickle', 'rb') as handle:
-            knn = pickle.load(handle)
-            session['params'] = knn.get_params()
         # Return only the Predicted iris species
-        session['prediction'] = target_names[knn.predict(flower_instance)][0].capitalize()
-        # Implement Post/Redirect/Get Pattern
-        return redirect(url_for('model'))
+        flowers = ['setosa', 'versicolor', 'virginica']
+        session['prediction'] = flowers[machine_learning_model.predict(flower_instance)[0]]
 
-    return render_template('model.html', form=form, **session)
+        # Implement Post/Redirect/Get Pattern
+        return redirect(url_for('home'))
+
+    return render_template('home.html', form=form, **session)
 
 
 # Handle Bad Requests
@@ -60,11 +53,6 @@ def model():
 def page_not_found(e):
     return render_template('404.html'), 404
 
-
-app.secret_key = 'super_secret_key'
-
-app.logger.addHandler(logging.StreamHandler(sys.stdout))
-app.logger.setLevel(logging.ERROR)
-
+app.secret_key = 'super_secret_key_shhhhhh'
 if __name__ == '__main__':
     app.run(debug=True)
