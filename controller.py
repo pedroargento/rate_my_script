@@ -1,26 +1,50 @@
 from flask import Flask, render_template, session, redirect, url_for
 from flask.ext.wtf import Form
-from wtforms import IntegerField, StringField, SubmitField, SelectField, DecimalField
+from wtforms import IntegerField, StringField, SubmitField, SelectField, DecimalField, TextAreaField
 from wtforms.validators import Required
 import pickle
 from sklearn import datasets
 
+from transformers import *
+import pandas as pd
+import scipy as sp
+import numpy as np
+
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LinearRegression
+
+
+import nltk
+from nltk.corpus import stopwords
+from nltk.tag import pos_tag
+from textblob import TextBlob, Word
+
+from sklearn.pipeline import Pipeline, FeatureUnion
+from sklearn.base import BaseEstimator
+from sklearn.base import ClassifierMixin
+from sklearn.base import TransformerMixin
+from sklearn.preprocessing import StandardScaler
+
+
+import sys  
+reload(sys)  
+sys.setdefaultencoding('utf8')
 # Initialize Flask App
 app = Flask(__name__)
 
 
 print "loading my model"
-with open('model.pkl', 'rb') as handle:
+with open('final_model.pkl', 'rb') as handle:
     machine_learning_model = pickle.load(handle)
 print "model loaded"
 
 
 # Initialize Form Class
 class theForm(Form):
-    param1 = DecimalField(label='Sepal Length (cm):', places=2, validators=[Required()])
-    param2 = DecimalField(label='Sepal Width (cm):', places=2, validators=[Required()])
-    param3 = DecimalField(label='Petal Length (cm):', places=2, validators=[Required()])
-    param4 = DecimalField(label='Petal Width (cm):', places=2, validators=[Required()])
+    param1 = TextAreaField(label='Script:',  validators=[Required()])
+    param2 = StringField(label='Genre:', validators=[Required()])
+    param3 = IntegerField(label='Number of Pages:', validators=[Required()])
     submit = SubmitField('Submit')
 
 
@@ -30,18 +54,21 @@ def home():
     form = theForm(csrf_enabled=False)
     if form.validate_on_submit():  # activates this if when i hit submit!
         # Retrieve values from form
-        session['sepal_length'] = form.param1.data
-        session['sepal_width'] = form.param2.data
-        session['petal_length'] = form.param3.data
-        session['petal_width'] = form.param4.data
+        session['script'] = form.param1.data
+        session['genre'] = form.param2.data
+        session['runtime'] = form.param3.data
+       
         # Create array from values
-        flower_instance = [(session['sepal_length']), (session['sepal_width']), (session['petal_length']),
-                           (session['petal_width'])]
+        data_frame = pd.DataFrame({'script': [session['script']], 'Runtime': [session['runtime']], 'Genre': [session['genre']] })
+        
+        
 
         # Return only the Predicted iris species
-        flowers = ['setosa', 'versicolor', 'virginica']
-        session['prediction'] = flowers[machine_learning_model.predict(flower_instance)[0]]
-
+        session['prediction'] = '%.2f'%(float(machine_learning_model.predict(data_frame)))
+        figure = PlotSentiment(session['script'],session['runtime'])
+        session['y']= figure.get_plot()[1]
+        session['x']= figure.get_plot()[0]
+        session['text']= figure.get_plot()[2]        
         # Implement Post/Redirect/Get Pattern
         return redirect(url_for('home'))
 

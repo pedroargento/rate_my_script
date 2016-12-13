@@ -4,16 +4,54 @@
 	
 	<div class="content">
 			{% if prediction is defined %}
-                Sepal Length: {{ sepal_length }}<br>
-                Sepal Width: {{ sepal_width }}<br>
-                Petal Length: {{ petal_length }}<br>
-                Petal Width: {{ petal_width }}<br>
                 <br>
-                Is a {{ prediction }}.
+                Your script rating: {{ prediction }}.
+                <br>
+                <div id="tester" style="width:600px;height:250px;"></div>
+                
+                 <script>
+      
+	var trace1 = {
+  x: {{ x }},
+  y: {{ y }},
+  type: 'bar',
+  text: {{ text|tojson  }},
+  font: {
+      family: 'Courier'},
+  marker: {
+    color: 'rgb(158,202,225)',
+    opacity: 0.6,
+    line: {
+      color: 'rbg(8,48,107)',
+      width: 1.5
+    }
+  }
+};
+
+var data = [trace1];
+
+var layout = {
+  title: 'How does your script feel',
+  bargap : 0.05,
+  xaxis: {title: 'Page'},
+  yaxis: {title: 'S'}
+};
+
+Plotly.newPlot('tester', data, layout);
+</script>
+      
 			{% else %}
 				Please fill out the form below!
 			{% endif %}
 	</div>
+        
+   
+
+    
+
+     
+
+     
 
 	{% block page_content %}
 	<div class="content">
@@ -24,8 +62,6 @@
 			{{ form.param2.label }} {{ form.param2() }}
 			<br>
 			{{ form.param3.label }} {{ form.param3() }}
-			<br>
-			{{ form.param4.label }} {{ form.param4() }}
 			<br>
 			<br>
 			{{ form.submit() }}
