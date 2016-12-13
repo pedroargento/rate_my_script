@@ -16,9 +16,6 @@ from sklearn.base import ClassifierMixin
 from sklearn.base import TransformerMixin
 from sklearn.preprocessing import StandardScaler
 
-import plotly.plotly as py
-import plotly.graph_objs as go
-import plotly.offline as offplot
 import re
 import sys  
 reload(sys)  
