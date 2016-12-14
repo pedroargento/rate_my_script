@@ -2,7 +2,7 @@ from flask import Flask, render_template, session, redirect, url_for
 from flask.ext.wtf import Form
 from wtforms import IntegerField, StringField, SubmitField, SelectField, DecimalField, TextAreaField
 from wtforms.validators import Required
-import pickle
+import cPickle as pickle
 
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 #from sklearn.linear_model import LogisticRegression
