@@ -1,6 +1,6 @@
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
-from sklearn.linear_model import LinearRegression
+#from sklearn.linear_model import LogisticRegression
+#from sklearn.linear_model import LinearRegression
 
 import pandas as pd
 import numpy as np

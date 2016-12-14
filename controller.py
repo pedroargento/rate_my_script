@@ -3,31 +3,10 @@ from flask.ext.wtf import Form
 from wtforms import IntegerField, StringField, SubmitField, SelectField, DecimalField, TextAreaField
 from wtforms.validators import Required
 import pickle
-from sklearn import datasets
+
 
 from transformers import *
-import pandas as pd
-import scipy as sp
-import numpy as np
 
-from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
-from sklearn.linear_model import LinearRegression
-
-
-import nltk
-from nltk.corpus import stopwords
-from nltk.tag import pos_tag
-from textblob import TextBlob, Word
-
-from sklearn.pipeline import Pipeline, FeatureUnion
-from sklearn.base import BaseEstimator
-from sklearn.base import ClassifierMixin
-from sklearn.base import TransformerMixin
-from sklearn.preprocessing import StandardScaler
-
-
-import sys  
 reload(sys)  
 sys.setdefaultencoding('utf8')
 # Initialize Flask App
