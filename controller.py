@@ -4,6 +4,24 @@ from wtforms import IntegerField, StringField, SubmitField, SelectField, Decimal
 from wtforms.validators import Required
 import pickle
 
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+#from sklearn.linear_model import LogisticRegression
+#from sklearn.linear_model import LinearRegression
+
+import pandas as pd
+import numpy as np
+import scipy as sp
+import nltk
+from nltk.corpus import stopwords
+from nltk.tag import pos_tag
+from textblob import TextBlob, Word
+
+from sklearn.pipeline import Pipeline, FeatureUnion
+from sklearn.base import BaseEstimator
+from sklearn.base import ClassifierMixin
+from sklearn.base import TransformerMixin
+from sklearn.preprocessing import StandardScaler
+
 from transformers import SelectColumn
 from transformers import EnsembleRegressor
 from transformers import SentimentMetrics
