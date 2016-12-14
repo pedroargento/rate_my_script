@@ -129,9 +129,7 @@ def sentence_tokenize(text):
     words = TextBlob(text.replace(',', '.')).sentences
     return [word for word in words]
    
-from sklearn import decomposition
 
-from sklearn.base import BaseEstimator
 class DenseTransformer(TransformerMixin, BaseEstimator):
 
     def transform(self, X, y=None, **fit_params):
